@@ -16,13 +16,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             @endif
+            <div class="container">
+                <span class="text-dark fw-bold fs-5"> <a href="{{url('/')}}">Home/</a> </span>
+                <span class="text-warning fw-bold fs-5" > <a href="{{url('/task', @$subtask['task']['id'])}}" class="text-secondary">{{@$subtask['task']['title']}}</a> </span>
+
+            </div>
             <h2 class="text-center m-3">Subtask Details
                 <span style="float:right;"> <button type="button" class="btn edit m-1"
                         data-bs-toggle="modal"
                         data-bs-target="#editsubtask{{ $subtask['id'] }}"
                         data-title="{{ $subtask['title'] }}"
                         data-description="{{ $subtask['description'] }}"
-                        data-days="{{ json_encode($subtask['days']) }}"
+                        data-deadline="{{ json_encode($subtask['days']) }}"
                         data-status="{{ $subtask['status_id'] }}">
                         Edit
                     </button></span>
@@ -50,6 +55,10 @@
                                 <label class="form-label mt-2">Description :</label>
                                 <textarea class="form-control" name="description" rows="3" placeholder="Description">{{ $subtask['description'] }}</textarea>
                                 <input type="hidden" name="task_type_id" value="{{@$subtask['task_type_id']}}">
+                                @if(@$subtask['task_type_id']==1)
+                                <label class="form-label mt-2">Deadline :</label>
+                                <input type="date" name="deadline" class="form-control" value="{{@$subtask['deadline']}}">
+                                @else
                                 <!-- Days Field -->
                                 <label class="form-label mt-2">Select Days :</label>
                                 <div class="card border-dark mt-2">
@@ -66,6 +75,7 @@
                                         @endforeach
                                     </div>
                                 </div>
+                                @endif
 
                                 <!-- Status Field -->
                                 <label class="form-label mt-2">Status :</label>

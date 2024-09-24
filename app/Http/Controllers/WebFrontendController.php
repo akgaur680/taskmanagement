@@ -10,60 +10,70 @@ use Illuminate\Support\Facades\Auth;
 
 class WebFrontendController extends Controller
 {
-    public function homepage()
+    public function homepage(Request $request)
     {
         $today = strtolower(date('l'));
-        if (Auth::user()['role'] == 'user') {
-            $recurringsubtasks = SubTask::where('user_id', Auth::user()['id']) // Filter by user_id in SubTask
-                ->whereNotIn('status_id', array(3, 4))
-                ->where('task_type_id', 2) // Recurring tasks
-                ->whereRaw('FIND_IN_SET(?, days)', [$today])
-                // ->whereJsonContains('days', $today) // Check if today's day is in 'days' column
-                ->with('task', 'status') // Eager load the parent task
-                ->orderBy('status_id', 'desc')
-                ->get();
-
-            $one_timesubtasks = SubTask::where('user_id', Auth::user()['id'])
-                ->whereNotIn('status_id', array(3, 4))
-                ->where('task_type_id', 1)
-                ->orderBy('deadline', 'desc')
-                ->orderBy('status_id', 'asc')
-                ->with('task', 'status')
-                ->get();
-        } elseif (Auth::user()['role'] == 'admin') {
-
-            $recurringsubtasks = SubTask:: // Filter by user_id in SubTask
-                where('task_type_id', 2) // Recurring tasks
-                ->orderBy('status_id', 'asc')
-                ->whereRaw('FIND_IN_SET(?, days)', [$today])
-                // ->whereJsonContains('days', $today) // Check if today's day is in 'days' column
-                ->with('task', 'status') // Eager load the parent task
-                ->get();
-
-            $one_timesubtasks = SubTask::where('task_type_id', 1)
-                // ->orderBy('deadline', 'asc')
-                ->orderBy('status_id', 'asc')
-                ->with('task', 'status')
-                ->get();
+        $userId = Auth::user()->id;
+        $userRole = Auth::user()->role;
+    
+        // Queries for both task types
+        $recurringsubtasksQuery = SubTask::where('task_type_id', 2)
+            ->whereRaw('FIND_IN_SET(?, days)', [$today])
+            ->with('task', 'status');
+    
+        $one_timesubtasksQuery = SubTask::where('task_type_id', 1)
+            ->with('task', 'status');
+    
+        if ($userRole == 'user') {
+            $recurringsubtasksQuery->where('user_id', $userId)->whereNotIn('status_id', [3, 4]);
+            $one_timesubtasksQuery->where('user_id', $userId)->whereNotIn('status_id', [3, 4]);
         }
+    
+        // Apply filters separately
+        if ($request->has('recurring_status')) {
+            $recurringStatus = $request->input('recurring_status');
+            if ($recurringStatus) {
+                $recurringsubtasksQuery->where('status_id', $recurringStatus);
+            }
+        }
+    
+        if ($request->has('onetime_status')) {
+            $onetimeStatus = $request->input('onetime_status');
+            if ($onetimeStatus) {
+                $one_timesubtasksQuery->where('status_id', $onetimeStatus);
+            }
+        }
+    
+        // Execute the queries
+        $recurringsubtasks = $recurringsubtasksQuery->orderBy('status_id', 'asc')->get();
+        $one_timesubtasks = $one_timesubtasksQuery->orderBy('deadline', 'desc')->orderBy('status_id', 'asc')->get();
+    
         return view('web.dashboard', compact('recurringsubtasks', 'one_timesubtasks'));
-
-        // return view('dashboard', compact('recurringsubtasks', 'one_timesubtasks'));
     }
+    
 
-    public function task_list()
+    public function task_list(Request $request)
     {
         if (!Auth::check()) {
             return redirect()->route('login');
         }
+        $taskquery = Task::query();
         if (Auth::user()['role'] == 'user') {
-            $task = Task::where('user_id', Auth::user()['id'])
-                ->whereNotIn('status_id', array(3, 4))
-                ->orderBy('status_id', 'asc')
-                ->get();
+            $taskquery->where('user_id', Auth::user()['id'])
+                ->whereNotIn('status_id', array(3, 4));
         } elseif (Auth::user()['role'] == 'admin') {
-            $task = Task::orderBy('status_id', 'asc')->get();
+            $taskquery->orderBy('status_id', 'asc')->get();
         }
+
+        if($request->has('task_status')){
+            $taskstatus = $request->input('task_status');
+            if($taskstatus){
+                $taskquery->where('status_id', $taskstatus);
+            }
+        }
+        $taskquery->orderBy('deadline', 'asc');
+        $task = $taskquery->get();
+        
         return view('web/task_list', compact('task'));
     }
 

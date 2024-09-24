@@ -1,3 +1,10 @@
+<?php
+
+use App\Models\User;
+
+$users = User::where('role', 'user')->get();
+?>
+
 @extends('layouts.web')
 
 @section('content')
@@ -48,8 +55,22 @@
                                     <!-- Deadline Field (Initially Hidden) -->
                                     <div id="deadlineField" class="mt-2">
                                         <label class="form-label">Deadline :</label>
-                                        <input type="date" class="form-control" value="" name="deadline" placeholder="Deadline">
+                                        <input type="date" class="form-control" value="" min="{{date('Y-m-d')}}" name="deadline" placeholder="Deadline">
                                     </div>
+                                    <!-- Assign to User -->
+
+                                    @if (Auth::user()['role']=='admin')
+                                    <label class="form-label mt-2">Assign to User :</label>
+                                    <select class="form-select" name="user_id" required>
+                                        <option selected>Select User</option>
+                                        @foreach (@$users as $user )
+                                        <option value="{{@$user['id']}}">{{@$user['name']}}</option>
+                                        @endforeach
+                                       
+                                    </select>
+                                    @endif
+                                    
+
 
                                 </div>
                                 <div class="modal-footer">
@@ -61,7 +82,26 @@
                     </div>
                 </div>
 
+                <div>
+                    <div style="width: 20%; float:right;">
+
+                        <form action="{{route('tasks.filter')}}" method="get" enctype="multipart/form-data">
+                            <!-- <input type="hidden" name="task_status" value=""> -->
+                            <select name="task_status" class="form-select" onchange="this.form.submit();">
+                                <option value="">Filter By Status</option>
+                                <option value="1" {{request('task_status') ==1 ? 'selected' : ''}}>Pending</option>
+                                <option value="2" {{request('task_status') ==2 ? 'selected' : ''}}>In Progress</option>
+                                <option value="3" {{request('task_status') ==3 ? 'selected' : ''}}>Completed</option>
+                                <option value="4" {{request('task_status') ==4 ? 'selected' : ''}}>Blocked</option>
+                                <option value="5" {{request('task_status') ==5 ? 'selected' : ''}}>Overdue</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
+
                 <div class="subtask-table table-responsive">
+
                     <table class="table table-bordered">
 
                         <tr>
@@ -71,7 +111,16 @@
                             <th>Deadline</th>
                             <th>Actions</th>
                         </tr>
+                        @if(@$task->isempty())
+                        <tr>
+                            <td colspan="5">
+                                <h5>No Task Available</h5>
+                            </td>
+                        </tr>
+                        @endif
+
                         @foreach ($task as $tasks)
+
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td><a class="text-decoration-none text-dark fw-bold" href="{{route('task.view', @$tasks['id'])}}">{{ $tasks['title'] }}</a></td>
@@ -95,7 +144,6 @@
                                     <button type="button" class="btn edit m-1" data-bs-toggle="modal" data-bs-target="#edittask{{ $tasks['id'] }}">
                                         Edit
                                     </button>
-                                    @if(@$tasks['user_id']==Auth::user()['id'])
                                     <!-- Edit Task Modal -->
                                     <div class="modal fade" id="edittask{{ $tasks['id'] }}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edittaskLabel{{ $tasks['id'] }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -108,6 +156,7 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-body">
+                                                        <input type="hidden" name="user_id" value="{{@$tasks['user_id']}}">
                                                         <label class="form-label mt-2">Title :</label>
                                                         <input type="text" class="form-control" name="title" value="{{ $tasks['title'] }}" placeholder="Title">
 
@@ -116,7 +165,7 @@
 
                                                         <div id="deadlineField" class="mt-2">
                                                             <label class="form-label">Deadline :</label>
-                                                            <input type="date" class="form-control" name="deadline" value="{{ $tasks['deadline'] }}" placeholder="Deadline">
+                                                            <input type="date" class="form-control" min="{{date('Y-m-d')}}" name="deadline" value="{{ $tasks['deadline'] }}" placeholder="Deadline">
                                                         </div>
                                                         <label class="form-label mt-2">Status :</label>
                                                         <select class="form-select" name="status_id">
@@ -135,8 +184,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @else
-                                    <div class="modal fade" id="edittask{{ $tasks['id'] }}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edittaskLabel{{ $tasks['id'] }}" aria-hidden="true">
+                                    <!-- <div class="modal fade" id="edittask{{ $tasks['id'] }}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edittaskLabel{{ $tasks['id'] }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -145,13 +193,12 @@
                                                 </div>
                                                 <div class="modal-body">Only Owner of this Task Can Edit The Task</div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
                                                     <!-- <button type="submit" class="btn btn-primary">Update</button> -->
-                                                </div>
+                                                <!-- </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    @endif
+                                    </div> -->
 
                                     <!-- Delete Button and Modal -->
                                     <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteconfirmation{{ $tasks['id'] }}">

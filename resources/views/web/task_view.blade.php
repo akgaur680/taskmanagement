@@ -1,6 +1,7 @@
 @extends('layouts.web')
 @section('content')
 
+
 <div class="container mt-2">
     <div class="card" style="background-color:#D6E9D2;">
         <div class="card-body">
@@ -21,7 +22,7 @@
                         Edit Task
                     </button>
                 </span></h2>
-                <!-- Edit Task Modal -->
+            <!-- Edit Task Modal -->
             <div class="modal fade" id="edittask{{ $task['id'] }}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edittaskLabel{{ $task['id'] }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -41,7 +42,7 @@
 
                                 <div id="" class="mt-2">
                                     <label class="form-label">Deadline :</label>
-                                    <input type="date" class="form-control" name="deadline" value="{{ $task['deadline'] }}" placeholder="Deadline">
+                                    <input type="date" class="form-control" name="deadline" min="{{date('Y-m-d')}}" value="{{ $task['deadline'] }}" placeholder="Deadline">
                                 </div>
                                 <label class="form-label mt-2">Status :</label>
                                 <select class="form-select" name="status_id">
@@ -108,6 +109,7 @@
                                 <form action="{{route('store.subtask', @$task['id'])}}" method="post" class="">
                                     @csrf
                                     <div class="modal-body">
+                                        <input type="hidden" name="user_id" value="{{@$task['user_id']}}">
                                         <label class="form-label mt-2">Title :</label>
                                         <input type="text" class="form-control" value="" name="title" placeholder="Title">
 
@@ -116,15 +118,15 @@
 
                                         <label class="form-label mt-2">Task Type :</label>
                                         <select class="form-select" name="task_type_id" id="taskType" onchange="toggleFields()">
-                                                    <option value="">Choose...</option>
-                                                    <option value="1">One-Time</option>
-                                                    <option value="2">Recurring</option>
-                                                </select>
-                                                <!-- Deadline Field (Initially Hidden) -->
-                                                <div id="deadlineField" class="mt-2" style="display: none;">
-                                                    <label class="form-label">Deadline :</label>
-                                                    <input type="date" class="form-control" value="" name="deadline" placeholder="Deadline">
-                                                </div>
+                                            <option value="">Choose...</option>
+                                            <option value="1">One-Time</option>
+                                            <option value="2">Recurring</option>
+                                        </select>
+                                        <!-- Deadline Field (Initially Hidden) -->
+                                        <div id="deadlineField" class="mt-2" style="display: none;">
+                                            <label class="form-label">Deadline :</label>
+                                            <input type="date" class="form-control" value="" min="{{date('Y-m-d')}}" name="deadline" placeholder="Deadline">
+                                        </div>
                                         <!-- Days Field (Initially Hidden) -->
                                         <div id="daysField" class="card border-dark mt-2" style="display: none;">
                                             <div class="card-body lh-lg">
@@ -341,7 +343,7 @@
                                                         <!-- Deadline Field (Initially Hidden) -->
                                                         <div id="" class="mt-2">
                                                             <label class="form-label">Deadline :</label>
-                                                            <input type="date" class="form-control" value="{{@$subtask['deadline']}}" name="deadline" placeholder="Deadline">
+                                                            <input type="date" class="form-control" min="{{date('Y-m-d')}}" value="{{@$subtask['deadline']}}" name="deadline" placeholder="Deadline">
                                                         </div>
 
                                                         <label class="form-label mt-2">Status :</label>

@@ -28,20 +28,21 @@ class CheckOverdue extends Command
     public function handle()
     {
         $today = strtolower(date('Y-m-d'));
-        $task = Task::whereDate('deadline','<',$today)->get();
+        $task = Task::whereDate('deadline','<',$today)->whereNotIn('status_id', [3,4])->get();
        foreach($task as $tasks){
       
         $tasks->Update(['status_id'=>5]);
+        $subtasks = SubTask::where('task_id',$tasks['id'])->whereNotIn('status_id', [3,4])->get();
+        foreach($subtasks as $subtask){
+            $subtask->update(['status_id'=>5]);
+        }
        
        }
-       $subtask = SubTask::whereDate('deadline','<',$today)->get();
+       $subtask = SubTask::whereDate('deadline','<',$today)->whereNotIn('status_id', [3,4])->get();
        foreach($subtask as $subtasks )
        $subtasks->update(['status_id'=>5]);
 
-    //    if($task['status_id']==5){
-    //     $subtask = SubTask::where('task_id',$task['id'])->get();
-    //     $subtask->update(['status_id'=>5]);
-    // }
+      
     }
     
 }

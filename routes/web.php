@@ -63,5 +63,8 @@ Route::middleware('auth')->group(function(){
 Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [WebFrontendController::class, 'profile'])->name('profile');
     Route::put('/update-profile/{id}', [WebAuthController::class, 'update'])->name('profile.update');
+    Route::get('/dashboard/filter', [WebFrontendController::class, 'homepage'])->name('dashboard.filter');
+    Route::get('/tasks/filter', [WebFrontendController::class, 'task_list'])->name('tasks.filter');
+
 
 });

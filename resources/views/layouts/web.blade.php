@@ -35,16 +35,16 @@
                             <a class="nav-link text-white" href="/tasks">Tasks</a>
                         </li>
                         <li class="nav-item  fs-5 fw-normal text-light dropdown">
-                            <a class="nav-link dropdown-toggle text-white" href="{{url('/subtasks')}}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link text-white" href="{{url('/subtasks')}}" role="button"  aria-expanded="false">
                                 Subtasks
                             </a>
-                            <ul class="dropdown-menu">
+                            <!-- <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{url('/subtasks')}}">Today's Subtask</a></li>
                                 <li><a class="dropdown-item" href="{{url('/subtasks')}}">Pending Subtask</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                            </ul>
+                            </ul> -->
                         </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link disabled text-white" aria-disabled="true">Link</a>
@@ -70,7 +70,7 @@
                             </ul>
 
                         </div>
-                        <img src="#" style="border-radius: 50%;" class="me-5 m-2" height="50px" width="50px" alt="Image">
+                        <!-- <img src="#" style="border-radius: 50%;" class="me-5 m-2" height="50px" width="50px" alt="Image"> -->
 
                     </div>
                 </div>

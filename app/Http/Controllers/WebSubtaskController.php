@@ -31,7 +31,6 @@ class WebSubtaskController extends Controller
 
             $subtask = $request->all();
             $task = Task::findOrFail($taskid);
-            $subtask['user_id'] = Auth::user()['id'];
             $subtask['task_id'] = $task->id;
             $task_deadline = $task->deadline;
             if ($request->has('deadline') && $request->deadline > $task->deadline) {
@@ -44,8 +43,15 @@ class WebSubtaskController extends Controller
             } else {
                 $subtask['days'] = null; // No days for One-Time tasks
             }
+            if(Auth::user()['role']=='admin'){
+                $subtask['assigned_by'] = Auth::user()['id'];
+                $subtask['user_id'] = $request->user_id;
+            }
+            else{
+            $subtask['user_id'] = Auth::user()['id'];
 
-            // dd($subtask);
+            }
+
             SubTask::create($subtask);
             return redirect()->back()->with('success', 'Subtask Added Successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -87,6 +93,14 @@ class WebSubtaskController extends Controller
             $subtaskData['days'] = is_array($request->days) ? implode(',', $request->days) : null;
         } else {
             $subtaskData['days'] = null; // No days for One-Time tasks
+        }
+        if(Auth::user()['role']=='admin'){
+            $subtask['assigned_by'] = Auth::user()['id'];
+            $subtask['user_id'] = $request->user_id;
+        }
+        else{
+        $subtask['user_id'] = Auth::user()['id'];
+
         }
 
         // Find and update the subtask

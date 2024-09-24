@@ -37,14 +37,23 @@ class WebTaskController extends Controller
      
              $task = $request->all();
              $task['day'] = $day;
-             $task['user_id'] = Auth::user()['id'];
+             $task['day'] = $day;
+             if(Auth::user()['role']=='admin'){
+                $task['user_id'] = $request->user_id;
+                $task['assigned_by']= Auth::user()['id'];
+             }
+             else{
+                $task['user_id'] = Auth::user()['id'];
+
+             }
+
      
              Task::create($task);
      
-             return redirect()->back()->with('success', 'Task Added Successfully');
+             return redirect()->route('tasks.list')->with('success', 'Task Added Successfully');
          }
          catch (\Illuminate\Validation\ValidationException $e){
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->route('tasks.list')->withErrors($e->errors())->withInput();
 
          }
      
@@ -84,7 +93,14 @@ class WebTaskController extends Controller
      
              $task = $request->all();
              $task['day'] = $day;
-             $task['user_id'] = Auth::user()['id'];
+             if(Auth::user()['role']=='admin'){
+                $task['user_id'] = $request->user_id;
+                $task['assigned_by']= Auth::user()['id'];
+             }
+             else{
+                $task['user_id'] = Auth::user()['id'];
+
+             }
      
              $id = Task::findOrFail($id);
              $id->update($task);

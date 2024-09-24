@@ -17,23 +17,26 @@
                 </div>
                 @endif
                 <h2 class="mt-2 text-center"><u>All Subtasks List</u> </h2>
-                @foreach (@$task as $tasks )
+                    @foreach (@$task as $tasks )
+                    @php
+                    $modalId = @$tasks['id'];
+                    @endphp
                 <div class="card m-1">
                     <div class="card-body">
                         <div class="card">
                             <h3 class="card-header"> <a href="{{route('task.view', @$tasks['id'])}}" class="text-decoration-none text-dark"> {{@$tasks['title']}}</a> <span style="float:right;">
-                                    <button type="button" class="btn edit m-1" data-bs-toggle="modal" data-bs-target="#addsubtask">
+                                    <button type="button" class="btn edit m-1" data-bs-toggle="modal" data-bs-target="#addsubtask-{{@$tasks['id']}}">
                                         + Add New Subtask
                                     </button>
                                 </span></h3>
-                                @if(@$tasks['user_id']== Auth::user()['id'])
+                            @if($tasks['user_id']== Auth::user()['id'])
 
                             <!-- Add New Subtask Modal -->
-                            <div class="modal fade" id="addsubtask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addsubtask" aria-hidden="true">
+                            <div class="modal fade" id="addsubtask-{{@$tasks['id']}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addsubtask-{{@$tasks['id']}}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="addsubtask">Add New Subtask</h1>
+                                            <h1 class="modal-title fs-5" id="addsubtask-{{@$tasks['id']}}">Add New Subtask</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <form action="{{route('store.subtask', @$tasks['id'])}}" method="post" class="">
@@ -44,19 +47,19 @@
                                                 <label class="form-label mt-2">Description :</label>
                                                 <textarea type="text" class="form-control" value="" name="description" rows="3" placeholder="Description"></textarea>
                                                 <label class="form-label mt-2">Task Type :</label>
-                                                <select class="form-select" name="task_type_id" id="taskType" onchange="toggleFields()">
+                                                <select class="form-select" name="task_type_id" id="taskType-{{$modalId}}" onchange="toggleFields('{{$modalId}}')">
                                                     <option value="">Choose...</option>
                                                     <option value="1">One-Time</option>
                                                     <option value="2">Recurring</option>
                                                 </select>
                                                 <!-- Deadline Field (Initially Hidden) -->
-                                                <div id="deadlineField" class="mt-2" style="display: none;">
+                                                <div id="deadlineField-{{$modalId}}" class="mt-2" style="display: none;">
                                                     <label class="form-label">Deadline :</label>
-                                                    <input type="date" class="form-control" value="" name="deadline" placeholder="Deadline">
-                                                    
+                                                    <input type="date" class="form-control" min="{{ date('Y-m-d') }}" value="" name="deadline" placeholder="Deadline">
+
                                                 </div>
                                                 <!-- Days Field (Initially Hidden) -->
-                                                <div id="daysField" class="card border-dark mt-2" style="display: none;">
+                                                <div id="daysField-{{$modalId}}" class="card border-dark mt-2" style="display: none;">
                                                     <div class="card-body lh-lg">
                                                         <label class="form-label">Select Days :</label>
                                                         <br>
@@ -86,22 +89,22 @@
                                 </div>
                             </div>
                             @else
-            <div class="modal fade" id="addsubtask" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addsubtaskLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="addsubtaskLabel">Add New Subtask</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">Only Owner of this Task Can Add New Task.</div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <!-- <button type="submit" class="btn btn-primary">Update</button> -->
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-                    @endif
+                            <div class="modal fade" id="addsubtask-{{@$tasks['id']}}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addsubtaskLabel-{{@$tasks['id']}}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="addsubtaskLabel-{{@$tasks['id']}}">Add New Subtask</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">Only Owner of this Task Can Add New Task.</div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <!-- <button type="submit" class="btn btn-primary">Update</button> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                         <div class="row">
                             <div class="col-sm-6 table-responsive">
@@ -198,20 +201,28 @@
     </div>
 </div>
 <script>
-    function toggleFields() {
-        const taskType = document.getElementById('taskType').value;
-        const deadlineField = document.getElementById('deadlineField');
-        const daysField = document.getElementById('daysField');
+    function toggleFields(modalId) {
+        const taskType = document.getElementById(`taskType-${modalId}`).value;
+        const deadlineField = document.getElementById(`deadlineField-${modalId}`);
+        const daysField = document.getElementById(`daysField-${modalId}`);
         if (taskType == '1') { // One-Time task
             deadlineField.style.display = 'block';
             daysField.style.display = 'none';
+            console.log(taskType);
         } else if (taskType == '2') { // Recurring task
             deadlineField.style.display = 'none';
             daysField.style.display = 'block';
+            console.log(taskType);
+
         } else { // No task type selected
             deadlineField.style.display = 'none';
             daysField.style.display = 'none';
+            console.log(taskType);
+
         }
     }
+
+
 </script>
+
 @endsection

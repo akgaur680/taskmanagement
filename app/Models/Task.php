@@ -16,7 +16,8 @@ class Task extends Model
         'deadline',
         'day',
         'status_id',
-        'user_id'
+        'user_id',
+        'assigned_by',
     ];
 
     public function subtask(){

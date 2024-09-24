@@ -19,6 +19,7 @@ class SubTask extends Model
         'days',
         'status_id',
         'user_id',
+        'assigned_by',
     ];
 
     public function task(){
