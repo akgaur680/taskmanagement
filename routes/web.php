@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\WebAuthController;
 use App\Http\Controllers\WebFrontendController;
+use App\Http\Controllers\WebReportController;
 use App\Http\Controllers\WebSubtaskController;
 use App\Http\Controllers\WebTaskController;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +67,10 @@ Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
     Route::put('/update-profile/{id}', [WebAuthController::class, 'update'])->name('profile.update');
     Route::get('/dashboard/filter', [WebFrontendController::class, 'homepage'])->name('dashboard.filter');
     Route::get('/tasks/filter', [WebFrontendController::class, 'task_list'])->name('tasks.filter');
+    Route::get('/report', [WebReportController::class, 'index'])->name('report.index');
+    Route::post('/report/store', [WebReportController::class, 'store'])->name('report.store');
+    Route::delete('report/delete/{id}', [WebReportController::class, 'delete'])->name('report.delete');
+    Route::put('report/edit/{id}', [WebReportController::class, 'edit'])->name('report.edit');
 
 
 });

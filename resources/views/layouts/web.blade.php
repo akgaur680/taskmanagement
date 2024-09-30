@@ -46,6 +46,9 @@
                                 </li>
                             </ul> -->
                         </li>
+                        <li class="nav-item  fs-5 fw-normal text-light">
+                            <a class="nav-link text-white" href="/report">Daily Report</a>
+                        </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link disabled text-white" aria-disabled="true">Link</a>
                         </li> -->
@@ -118,5 +121,9 @@
 
 
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script src="{{asset('assets/ajax.js')}}"></script>
+
 
 </html>
