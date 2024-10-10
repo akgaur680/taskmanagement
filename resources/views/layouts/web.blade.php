@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Task Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -73,7 +74,11 @@
                             </ul>
 
                         </div>
-                        <!-- <img src="#" style="border-radius: 50%;" class="me-5 m-2" height="50px" width="50px" alt="Image"> -->
+                        <form action="" method="post">
+                            @csrf
+                            <input type="hidden" name="subscription" value="500">
+                            <button type="submit" class="btn btn-primary m-2">Subscribe</button>
+                        </form>
 
                     </div>
                 </div>

@@ -3,7 +3,11 @@
 @section('content')
 <div class="container">
     <div class="card">
-        @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="message" style="display:none;" >
+            <strong>Success</strong> {{session('success')}}.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <!-- @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="message">
             <strong>Success</strong> {{session('success')}}.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -14,7 +18,7 @@
             <strong>Error</strong> {{session('errors')}}.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        @endif
+        @endif -->
         <div class="card-body">
             <h3>Daily Task Report for the Month "{{date('F')}}"
                 <span style="float: right;">
@@ -28,6 +32,7 @@
                         <h4 class="">Add Daily Work</h4>
                         <form id="dailyWorkForm" action="{{route('report.store')}}" method="post" enctype="multipart/form-data" class="p-1">
                             @csrf
+                            <div class="alert alert-danger" id="formError" style="display:none;"></div>
                             <div class="form-group m-2 p-2">
                                 <label for="taskDate">Date:</label>
                                 <input type="date" id="taskDate" name="date" max="{{date('Y-m-d')}}" min="{{ date('Y-m-d', strtotime('-30 days')) }}" class="form-control">
@@ -62,7 +67,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-bordered table-hover table-sm">
+                <table class="table table-bordered table-hover table-sm" id="table">
                     <thead>
                         <tr class="table-warning">
                             <th>Date</th>
@@ -197,6 +202,27 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        function getreport(){
+            $.ajax({
+                url: "{{route('report.index')}}",
+                type: 'GET',
+                dataType: "json",
+                success:function(response) {
+                    console.log("Success:", response);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error occurred:", error);
+                    console.log(xhr.response);
+                }
+            });
+        }
+        getreport();
+    });
+</script>
 
 
 @endsection

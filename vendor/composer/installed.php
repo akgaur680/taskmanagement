@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '4676164d8f95e340e5bb227675765cf5ebac4d49',
+        'reference' => '47ab4f75e35fe7aea9b1ce71a1e2844259c26771',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -397,7 +397,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '4676164d8f95e340e5bb227675765cf5ebac4d49',
+            'reference' => '47ab4f75e35fe7aea9b1ce71a1e2844259c26771',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -790,8 +790,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '3.0.0',
-                1 => '1.0|2.0|3.0',
+                0 => '1.0|2.0|3.0',
+                1 => '3.0.0',
             ),
         ),
         'psr/simple-cache' => array(
@@ -998,6 +998,15 @@
             'reference' => 'fa23ce16019289a18bb3446fdecd45befcdd94f8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../stella-maris/clock',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'stripe/stripe-php' => array(
+            'pretty_version' => 'v16.1.0',
+            'version' => '16.1.0.0',
+            'reference' => '47c55a5a8414d1d7584e6bbfb3e8179f3c43d83a',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../stripe/stripe-php',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

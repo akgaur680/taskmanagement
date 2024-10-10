@@ -3,6 +3,7 @@
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\stripeController;
 use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\WebAuthController;
 use App\Http\Controllers\WebFrontendController;
@@ -72,5 +73,9 @@ Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
     Route::delete('report/delete/{id}', [WebReportController::class, 'delete'])->name('report.delete');
     Route::put('report/edit/{id}', [WebReportController::class, 'edit'])->name('report.edit');
 
+    // STRIPE
+    Route::post('/subscribe', [stripeController::class, 'subscribe'])->name('subscribe');
+    Route::get('/success', [stripeController::class, 'success'])->name('success');
+    Route::get('/cancel', [stripeController::class, 'cancel'])->name('cancel');
 
 });

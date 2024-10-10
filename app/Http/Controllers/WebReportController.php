@@ -43,10 +43,10 @@ class WebReportController extends Controller
                     'required',
                     'date',
                     'before_or_equal:' . $today,
-                Rule::unique('report')->where(function ($query) use ($request) {
-                    return $query->where('user_id', Auth::id())->where('date', $request->date);
-                }),
-            ],
+                    Rule::unique('report')->where(function ($query) use ($request) {
+                        return $query->where('user_id', Auth::id())->where('date', $request->date);
+                    }),
+                ],
                 'checkIn' => 'required',
                 'checkOut' => 'required',
                 'project' => 'required|string',
@@ -58,6 +58,7 @@ class WebReportController extends Controller
             $report['user_id'] = Auth::user()->id;
             $savedReport = Report::create($report);
     
+            // Return success message with details
             return response()->json([
                 'message' => 'Daily Task Added Successfully',
                 'id' => $savedReport->id,
@@ -67,12 +68,14 @@ class WebReportController extends Controller
                 'project' => $savedReport->project,
                 'taskDetails' => $savedReport->taskDetails,
                 'remarks' => $savedReport->remarks,
-            ]);
+            ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
     }
     
+
+
 
     public function edit(Request $request, $id)
     {
